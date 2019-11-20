@@ -4,9 +4,9 @@ import datetime
 import pickle
 import traceback
 from pathlib import Path
-
+import time
 import requests
-
+import schedule
 from config import config
 from job import jobs_all
 
@@ -103,5 +103,10 @@ def proxy_patch(session):
     warnings.simplefilter('ignore', InsecureRequestWarning)
 
 
+# 开始启动时执行和每天到了设置时间时执行
+schedule.every().day.at(config.runtime).do(main).run()
+
 if __name__ == '__main__':
-    main()
+    while True:
+        schedule.run_pending()
+        time.sleep(10)
