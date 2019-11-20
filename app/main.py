@@ -103,10 +103,13 @@ def proxy_patch(session):
     warnings.simplefilter('ignore', InsecureRequestWarning)
 
 
-# 开始启动时执行和每天到了设置时间时执行
-schedule.every().day.at(config.runtime).do(main).run()
-
 if __name__ == '__main__':
-    while True:
-        schedule.run_pending()
-        time.sleep(10)
+
+    if not getattr(config, 'runtime', ''):
+        main()
+    else:
+        # 开始启动时执行和每天到了设置时间时执行
+        schedule.every().day.at(config.runtime).do(main).run()
+        while True:
+            schedule.run_pending()
+            time.sleep(10)

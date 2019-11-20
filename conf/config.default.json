@@ -16,5 +16,5 @@
     "open_verify": false,
     "ca_pem_file": ""
   },
-  "runtime": "08:00"
+  "runtime": ""
 }
