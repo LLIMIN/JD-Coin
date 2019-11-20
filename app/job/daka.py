@@ -2,7 +2,6 @@ import traceback
 
 from requests import Session
 
-import browser
 import job
 from .common import find_value, RequestError
 
@@ -53,6 +52,7 @@ class Daka:
             return True
 
     def login(self):
+        import browser
         cookies = browser.get_cookies(self.login_url)
         self.session.cookies.update(cookies)
 
