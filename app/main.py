@@ -59,7 +59,7 @@ def make_session() -> requests.Session:
             else:
                 session.verify = Path(__file__).parent.joinpath('../pem/{}'.format(ca_file_name))
         else:
-            proxy_patch()
+            proxy_patch(session)
 
     cookies_file = Path(__file__).parent.joinpath('../data/cookies')
 
