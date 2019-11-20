@@ -26,7 +26,7 @@ class Config:
     def load(cls, d):
         the_config = Config()
 
-        the_config.debug = d.get('debug', False)
+        the_config.__dict__.update(d)
 
         try:
             the_config.jd = {
@@ -44,8 +44,6 @@ class Config:
 
         else:
             the_config.jd['auto_submit'] = 1
-
-        the_config.jobs_skip = d.get('jobs_skip', [])
 
         return the_config
 

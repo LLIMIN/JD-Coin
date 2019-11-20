@@ -48,12 +48,25 @@ def make_session() -> requests.Session:
         'User-Agent': config.ua
     })
 
-    data_file = Path(__file__).parent.joinpath('../data/cookies')
+    # 代理设置
+    if config.proxy['open_proxy']:
+        session.proxies = config.proxy['proxies']
+        # 开启ssl验证时可以配置ssl证书
+        if config.proxy['open_verify']:
+            ca_file_name = config.proxy['ca_pem_file']
+            if not ca_file_name:
+                session.verify = True  # 默认使用Requests自带证书
+            else:
+                session.verify = Path(__file__).parent.joinpath('../pem/{}'.format(ca_file_name))
+        else:
+            proxy_patch()
 
-    if data_file.exists():
+    cookies_file = Path(__file__).parent.joinpath('../data/cookies')
+
+    if cookies_file.exists():
         try:
-            bytes = data_file.read_bytes()
-            cookies = pickle.loads(bytes)
+            bytes_data = cookies_file.read_bytes()
+            cookies = pickle.loads(bytes_data)
             session.cookies = cookies
             logging.info('# 从文件加载 cookies 成功.')
         except Exception as e:
@@ -71,25 +84,24 @@ def save_session(session):
     data_file.write_bytes(data)
 
 
-def proxy_patch():
+def proxy_patch(session):
     """
-    Requests 似乎不能使用系统的证书系统, 方便起见, 不验证 HTTPS 证书, 便于使用代理工具进行网络调试...
+    关于requests默认使用的CA证书：
+    Requests 默认附带了一套它信任的根证书，来自于 Mozilla trust store。这证书是 certifi 包来管理
+    通过更新certifi模块可以得到requests最新的根证书。当然可以通过以下代码找到：
+    >>> import certifi
+    >>> certifi.where()
+    'C:\\Program Files\\Python\\Python36\\lib\\site-packages\\certifi\\cacert.pem'
+    cacert.pem中包含很多家CA机构的证书
+    可以 不验证 HTTPS 证书
     http://docs.python-requests.org/en/master/user/advanced/#ca-certificates
     """
     import warnings
     from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-    class XSession(requests.Session):
-        def __init__(self):
-            super().__init__()
-            self.verify = False
-
-    requests.Session = XSession
+    session.verify = False
     warnings.simplefilter('ignore', InsecureRequestWarning)
 
 
 if __name__ == '__main__':
-    if config.debug and os.getenv('HTTPS_PROXY'):
-        proxy_patch()
-
     main()

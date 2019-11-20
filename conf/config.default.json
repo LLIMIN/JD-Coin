@@ -4,5 +4,16 @@
     "username": "",
     "password": ""
   },
-  "jobs_skip": ["DataStation"]
+  "jobs_skip": [
+    "DataStation"
+  ],
+  "proxy": {
+    "open_proxy": false,
+    "proxies": {
+      "http": "http://username:password@127.0.0.1:3128/",
+      "https": "https://user:password@127.0.0.1:3128/"
+    },
+    "open_verify": false,
+    "ca_pem_file": ""
+  }
 }
