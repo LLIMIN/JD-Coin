@@ -90,6 +90,22 @@
 "jobs_skip": ["DataStation", "Daka"]  
 ```
 
+#### 设置网络代理
+如果有自定义的ca证书则存放在‘pem’目录中，并在下面的‘ca_pem_file’指定文件名
+```json
+  "proxy": {
+    "open_proxy": true,
+    "proxies": {
+      "http": "http://username:password@127.0.0.1:3128/",
+      "https": "https://username:password@127.0.0.1:3128/"
+    },
+    "open_verify": true,
+    "ca_pem_file": "myCA.pem"
+  }
+```
+
+<br>
+
 任务列表:
 
 | 任务 | 描述 |
@@ -104,14 +120,6 @@
 | RedPacket | 京东小金库现金红包（已下线） |
 
 <br>
-
-
-### 设置网络代理
-
-设置环境变量 `HTTP_PROXY` / `HTTPS_PROXY` 即可。
-
-<br>
-
 
 ## Example
 
