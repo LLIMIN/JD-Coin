@@ -105,11 +105,13 @@ def proxy_patch(session):
 
 if __name__ == '__main__':
 
-    if not getattr(config, 'runtime', ''):
+    if not getattr(config, 'runtime', []):
         main()
     else:
-        # 开始启动时执行和每天到了设置时间时执行
-        schedule.every().day.at(config.runtime).do(main).run()
+        # 每天到了设置时间时执行
+        logging.info('每天定时执行时间：{}'.format(config.runtime))
+        for runtime in config.runtime:
+            schedule.every().day.at(runtime).do(main)
         while True:
             schedule.run_pending()
             time.sleep(10)
